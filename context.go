@@ -8,6 +8,7 @@ import (
 
 // New creates a context from a http request.
 func New(r *http.Request) *Context {
+	// TODO: url decode path?
 	p := strings.Split(r.URL.Path, "/")
 	h := strings.Split(r.URL.Fragment, "/")
 	return &Context{r, nil, p, nil, h}
@@ -64,6 +65,18 @@ func (c *Context) Hash() (string, *Context) {
 // appended to it.
 func (c *Context) AppendHash(hashElement string) *Context {
 	result := *c
-	result.path = append(append([]string{}, result.hash...), hashElement)
+	result.hash = append(append([]string{}, result.hash...), hashElement)
 	return &result
+}
+
+// HRef returns a valid HREF for the current scope
+func (c *Context) HRef() string {
+	// TOOD: url encode shit?
+	result := ""
+	for _, p := range c.path {
+		if p != "" {
+			result += "/" + p
+		}
+	}
+	return result
 }
